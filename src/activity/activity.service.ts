@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { Activity } from './entities/activity.entity';
 
 @Injectable()
 export class ActivityService {
-  create(createActivityDto: CreateActivityDto) {
-    return 'This action adds a new activity';
+  constructor(
+    @InjectRepository(Activity)
+    private activityRepository: Repository<Activity>,
+  ) {}
+
+  async create(createActivityDto: CreateActivityDto) {
+    const activity = this.activityRepository.create(createActivityDto);
+    return this.activityRepository.save(activity);
   }
 
   findAll() {
-    return `This action returns all activity`;
+    return this.activityRepository.find({ relations: ['class', 'topics'] });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} activity`;
+  async findOne(id: number) {
+    const activity = await this.activityRepository.findOne({ where: { id }, relations: ['class', 'topics'] });
+    if (!activity) {
+      throw new NotFoundException(`Activity with ID ${id} not found`);
+    }
+    return activity;
   }
 
-  update(id: number, updateActivityDto: UpdateActivityDto) {
-    return `This action updates a #${id} activity`;
+  async update(id: number, updateActivityDto: UpdateActivityDto) {
+    const activity = await this.activityRepository.preload({ id, ...updateActivityDto });
+    if (!activity) {
+      throw new NotFoundException(`Activity with ID ${id} not found`);
+    }
+    return this.activityRepository.save(activity);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} activity`;
+  async remove(id: number) {
+    const activity = await this.findOne(id);
+    return this.activityRepository.remove(activity);
   }
 }

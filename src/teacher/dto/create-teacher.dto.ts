@@ -1,23 +1,19 @@
 import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsInt, IsEmail, Min } from 'class-validator';
 
-export class CreateCourseDto {
+export class CreateTeacherDto {
     @IsString()
     @IsNotEmpty()
     name: string;
   
     @IsString()
     @IsNotEmpty()
-    term: string;
-  
-    @IsString()
-    @IsNotEmpty()
-    schedule: string;
+    lastname: string;
   
     @IsBoolean()
     @IsOptional()
-    isActive?: boolean;
+    isVerified?: boolean;
   
     @IsInt()
     @IsNotEmpty()
-    teacherId: number;
+    userId: number;
   }

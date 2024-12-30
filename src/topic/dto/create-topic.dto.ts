@@ -1,11 +1,11 @@
 import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsInt, IsEmail, Min } from 'class-validator';
 
-export class CreateActivityDto {
+export class CreateTopicDto {
     @IsString()
     @IsNotEmpty()
-    difficulty: string;
+    name: string;
   
     @IsInt()
     @IsNotEmpty()
-    topicId: number;
+    classId: number;
   }

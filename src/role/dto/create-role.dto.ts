@@ -1,14 +1,14 @@
 import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsInt, IsEmail, Min } from 'class-validator';
 
-export class CreateUserDto {
-    @IsEmail()
-    @IsNotEmpty()
-    email: string;
-  
+export class CreateRoleDto {
     @IsString()
     @IsNotEmpty()
-    password: string;
+    name: string;
+  
+    @IsString()
+    @IsOptional()
+    description?: string;
   
     @IsOptional()
-    rolesIds?: number[];
+    permissionsIds?: number[];
   }

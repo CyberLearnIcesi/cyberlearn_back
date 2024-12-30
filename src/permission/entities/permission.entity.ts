@@ -1,14 +1,16 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
-import { Student } from '../../student/entities/student.entity';
-import { Topic } from '../../topic/entities/topic.entity';
+import { Role } from '../../role/entities/role.entity';
 
-@Entity('activities')
-export class Activity {
+@Entity('permissions')
+export class Permission {
   @PrimaryGeneratedColumn()
   id: number;
 
   @Column()
-  difficulty: string;
+  name: string;
+
+  @Column({ nullable: true })
+  description?: string;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   createdAt: Date;
@@ -16,9 +18,6 @@ export class Activity {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @ManyToMany(() => Student, (student) => student.activities)
-  students: Student[];
-
-  @ManyToOne(() => Topic, (topic) => topic.activities)
-  topic: Topic;
+  @ManyToMany(() => Role, (role) => role.permissions)
+  roles: Role[];
 }
