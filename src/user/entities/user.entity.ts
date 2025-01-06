@@ -20,8 +20,8 @@ export class User {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @ManyToMany(() => Role, (role) => role.users)
-  roles: Role[];
+  @ManyToOne(() => Role, (role) => role.users)
+  role: Role;
 
   @OneToOne(() => Teacher, (teacher) => teacher.user)
   teacher: Teacher;

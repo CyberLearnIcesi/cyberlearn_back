@@ -31,11 +31,11 @@ export class AuthService {
       }
 
       console.log('USER' + user);
-      console.log('User ' + user.roles);
+      console.log('User ' + user.role);
 
 
       const payload = {id: user.id, email: user.email, 
-        role: user.roles ? user.roles : null // 
+        role: user.role ? user.role : null // 
       };
 
       return {

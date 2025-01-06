@@ -14,6 +14,7 @@ import { ConfigModule } from '@nestjs/config';  // Configuración global
 import { TypeOrmModule } from '@nestjs/typeorm';  // Conexion a base de datos
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';  // Guard de autenticación
+import { DataInitService } from './init/data-init.service';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthGuard } from './auth/guard/auth.guard';  // Guard de autenticación
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
+      migrations: ["dist/migrations/*{.ts,.js}"],
       synchronize: true,  // En prod false
       autoLoadEntities: true,
       logging: true,  // Habilitado para ver las consultas SQL
@@ -46,6 +48,7 @@ import { AuthGuard } from './auth/guard/auth.guard';  // Guard de autenticación
   ],
   controllers: [AppController],
   providers: [
+    DataInitService,
     AppService,
     {
       provide: APP_GUARD,

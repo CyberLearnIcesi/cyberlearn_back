@@ -17,6 +17,11 @@ export class RoleService {
     return this.roleRepository.save(role);
   }
 
+  async findOneByName(name: string) {
+    const role = await this.roleRepository.findOneBy({ name });
+    return role;
+  }
+
   findAll() {
     return this.roleRepository.find({ relations: ['permissions'] });
   }

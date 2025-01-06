@@ -8,12 +8,20 @@ import {
   import { Request } from 'express';
   import { ConfigService } from '@nestjs/config';
   import jwt from 'jsonwebtoken';
+import { Reflector } from '@nestjs/core';
   
   @Injectable()
   export class AuthGuard implements CanActivate {
-    constructor(private jwtService: JwtService, private configService: ConfigService) {}
+    constructor(private jwtService: JwtService, private configService: ConfigService, private reflector: Reflector,) {}
     
     async canActivate(context: ExecutionContext): Promise<boolean> {
+      // la ruta es pública
+      const isPublic = this.reflector.get<boolean>('isPublic', context.getHandler());
+      
+      if (isPublic) {
+        return true;
+      }
+
       const request = context.switchToHttp().getRequest();
 
       console.log('Request: ' + request);

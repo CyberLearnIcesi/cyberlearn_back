@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
+import { Role } from '../role/entities/role.entity';
 
 @Injectable()
 export class UserService {
@@ -18,11 +19,11 @@ export class UserService {
   }
 
   findAll() {
-    return this.userRepository.find({ relations: ['roles'] });
+    return this.userRepository.find({ relations: ['role'] });
   }
 
   async findOne(id: number) {
-    const user = await this.userRepository.findOne({ where: { id }, relations: ['roles'] });
+    const user = await this.userRepository.findOne({ where: { id }, relations: ['role'] });
     if (!user) {
       throw new NotFoundException(`User with ID ${id} not found`);
     }
@@ -30,7 +31,7 @@ export class UserService {
   }
 
   async findByEmail(email: string) {
-    const user = await this.userRepository.findOne({ where: { email }, relations: ['roles'] });
+    const user = await this.userRepository.findOne({ where: { email }, relations: ['role'] });
     if (!user) {
       throw new NotFoundException(`User with email ${email} not found`);
     }

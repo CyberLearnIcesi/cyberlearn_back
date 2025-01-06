@@ -10,5 +10,5 @@ export class CreateUserDto {
     password: string;
   
     @IsOptional()
-    rolesIds?: number[];
+    roleId?: number;
   }
