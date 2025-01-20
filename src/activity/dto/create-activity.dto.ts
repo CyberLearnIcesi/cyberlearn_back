@@ -1,11 +1,16 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsInt, IsEmail, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt, IsArray, ArrayNotEmpty } from 'class-validator';
 
 export class CreateActivityDto {
-    @IsString()
-    @IsNotEmpty()
-    difficulty: string;
-  
-    @IsInt()
-    @IsNotEmpty()
-    topicId: number;
-  }
+  @IsString()
+  @IsNotEmpty()
+  difficulty: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  topicId: number;
+
+  @IsArray()
+  @IsOptional()
+  @ArrayNotEmpty()
+  students?: number[]; // IDs de los estudiantes relacionados
+}

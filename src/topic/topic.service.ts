@@ -4,18 +4,29 @@ import { Repository } from 'typeorm';
 import { CreateTopicDto } from './dto/create-topic.dto';
 import { UpdateTopicDto } from './dto/update-topic.dto';
 import { Topic } from './entities/topic.entity';
+import { Activity } from '../activity/entities/activity.entity';
 
 @Injectable()
 export class TopicService {
   constructor(
     @InjectRepository(Topic)
     private topicRepository: Repository<Topic>,
+    @InjectRepository(Activity)
+    private activityRepository: Repository<Activity>,
   ) {}
 
   async create(createTopicDto: CreateTopicDto) {
-    const topic = this.topicRepository.create(createTopicDto);
+    const { activityIds, ...topicData } = createTopicDto;
+  
+    const topic = this.topicRepository.create(topicData);
+  
+    if (activityIds && activityIds.length > 0) {
+      topic.activities = await this.activityRepository.findByIds(activityIds);
+    }
+  
     return this.topicRepository.save(topic);
   }
+  
 
   findAll() {
     return this.topicRepository.find({ relations: ['activities', 'class'] });

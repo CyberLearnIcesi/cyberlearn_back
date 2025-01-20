@@ -8,20 +8,21 @@ export class RolesGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.get<string[]>('roles', context.getHandler());
 
+    console.log('Entro a verificar ROLES')
+
     if (!requiredRoles) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest();
     const user = request.user;
-    console.log('User role: ' + user.role);
+    console.log('User role: ' + user.role.name);
 
     if (!user || !user.role) {
       console.error('User or role not defined.');
       return false;
     }
 
-    // Solo comparas el rol del usuario con los roles requeridos
-    return requiredRoles.includes(user.role); // 'user.role.name' es el nombre del rol del usuario
+    return requiredRoles.includes(user.role.name); // 'user.role.name' es el nombre del rol del usuario
   }
 }

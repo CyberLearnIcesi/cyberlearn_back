@@ -1,18 +1,23 @@
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, UseGuards } from '@nestjs/common';
 import { TeacherService } from './teacher.service';
 import { CreateTeacherDto } from './dto/create-teacher.dto';
 import { UpdateTeacherDto } from './dto/update-teacher.dto';
+import { RolesGuard } from '../auth/guard/roles.guard';
+import { Roles } from '../auth/decorators/role.decorator';
 
 @Controller('teachers')
+@UseGuards(RolesGuard)
 export class TeacherController {
   constructor(private readonly teacherService: TeacherService) {}
 
   @Post()
+  @Roles('ADMIN')
   create(@Body() createTeacherDto: CreateTeacherDto) {
     return this.teacherService.create(createTeacherDto);
   }
 
   @Get()
+  @Roles('ADMIN')
   findAll() {
     return this.teacherService.findAll();
   }

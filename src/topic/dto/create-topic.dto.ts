@@ -1,11 +1,15 @@
-import { IsString, IsNotEmpty, IsOptional, IsBoolean, IsInt, IsEmail, Min } from 'class-validator';
+import { IsString, IsNotEmpty, IsOptional, IsInt, IsArray } from 'class-validator';
 
 export class CreateTopicDto {
-    @IsString()
-    @IsNotEmpty()
-    name: string;
-  
-    @IsInt()
-    @IsNotEmpty()
-    classId: number;
-  }
+  @IsString()
+  @IsNotEmpty()
+  name: string;
+
+  @IsInt()
+  @IsNotEmpty()
+  courseId: number;
+
+  @IsArray()
+  @IsOptional()
+  activityIds?: number[];
+}

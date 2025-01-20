@@ -11,10 +11,41 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    const user = this.userRepository.create(createUserDto);
+    const { roleId, ...userData } = createUserDto;
+    const user = this.userRepository.create(userData);
+  
+    if (roleId) {
+      const role = await this.roleRepository.findOne({ where: { id: roleId } });
+      if (!role) {
+        throw new NotFoundException(`Role with ID ${roleId} not found`);
+      }
+      user.role = role;
+    }
+  
+    return this.userRepository.save(user);
+  }
+  
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const { roleId, ...updateData } = updateUserDto;
+    const user = await this.userRepository.preload({ id, ...updateData });
+  
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+  
+    if (roleId) {
+      const role = await this.roleRepository.findOne({ where: { id: roleId } });
+      if (!role) {
+        throw new NotFoundException(`Role with ID ${roleId} not found`);
+      }
+      user.role = role;
+    }
+  
     return this.userRepository.save(user);
   }
 
@@ -36,14 +67,6 @@ export class UserService {
       throw new NotFoundException(`User with email ${email} not found`);
     }
     return user;
-  }
-
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    const user = await this.userRepository.preload({ id, ...updateUserDto });
-    if (!user) {
-      throw new NotFoundException(`User with ID ${id} not found`);
-    }
-    return this.userRepository.save(user);
   }
 
   async remove(id: number) {
