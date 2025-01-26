@@ -1,52 +1,32 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateCourseDto } from './dto/create-course.dto';
-import { UpdateCourseDto } from './dto/update-course.dto';
 import { Course } from './entities/course.entity';
-import { Student } from '../student/entities/student.entity';
-import { Teacher } from '../teacher/entities/teacher.entity';
+import { CreateCourseDto } from './dto/create-course.dto';
 
 @Injectable()
 export class CourseService {
   constructor(
     @InjectRepository(Course)
-    private courseRepository: Repository<Course>,
-    @InjectRepository(Student)
-    private studentRepository: Repository<Student>,
-    @InjectRepository(Teacher)
-    private teacherRepository: Repository<Teacher>,
+    private readonly courseRepository: Repository<Course>,
   ) {}
 
-  async create(createCourseDto: CreateCourseDto) {
-    const { teacherId, students, ...courseData } = createCourseDto;
-
-    const teacher = await this.teacherRepository.findOne({ where: { id: teacherId } });
-    if (!teacher) {
-      throw new NotFoundException(`Teacher with ID ${teacherId} not found`);
-    }
-
-    const studentEntities = students
-      ? await this.studentRepository.findByIds(students)
-      : [];
-
-    const course = this.courseRepository.create({
-      ...courseData,
-      teacher,
-      students: studentEntities,
-    });
-
-    return this.courseRepository.save(course);
+  // Crear un curso
+  async create(createCourseDto: CreateCourseDto): Promise<Course> {
+    const newCourse = this.courseRepository.create(createCourseDto);
+    return this.courseRepository.save(newCourse);
   }
 
-  findAll() {
-    return this.courseRepository.find({ relations: ['teacher', 'students', 'topics'] });
+  // Obtener todos los cursos
+  async findAll(): Promise<Course[]> {
+    return this.courseRepository.find({ relations: ['topics', 'class_groups'] });
   }
 
-  async findOne(id: number) {
+  // Obtener un curso por ID
+  async findOne(id: number): Promise<Course> {
     const course = await this.courseRepository.findOne({
       where: { id },
-      relations: ['teacher', 'students', 'topics'],
+      relations: ['topics', 'class_groups'],
     });
     if (!course) {
       throw new NotFoundException(`Course with ID ${id} not found`);
@@ -54,33 +34,16 @@ export class CourseService {
     return course;
   }
 
-  async update(id: number, updateCourseDto: UpdateCourseDto) {
-    const { students, teacherId, ...courseData } = updateCourseDto;
-
-    const course = await this.courseRepository.findOne({ where: { id }, relations: ['students', 'teacher'] });
-    if (!course) {
-      throw new NotFoundException(`Course with ID ${id} not found`);
-    }
-
-    if (teacherId) {
-      const teacher = await this.teacherRepository.findOne({ where: { id: teacherId } });
-      if (!teacher) {
-        throw new NotFoundException(`Teacher with ID ${teacherId} not found`);
-      }
-      course.teacher = teacher;
-    }
-
-    if (students) {
-      const studentEntities = await this.studentRepository.findByIds(students);
-      course.students = studentEntities;
-    }
-
-    Object.assign(course, courseData);
+  // Actualizar un curso por ID
+  async update(id: number, updateData: Partial<Course>): Promise<Course> {
+    const course = await this.findOne(id);
+    Object.assign(course, updateData);
     return this.courseRepository.save(course);
   }
 
-  async remove(id: number) {
+  // Eliminar un curso por ID
+  async remove(id: number): Promise<void> {
     const course = await this.findOne(id);
-    return this.courseRepository.remove(course);
+    await this.courseRepository.remove(course);
   }
 }

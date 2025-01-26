@@ -1,12 +1,18 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Role } from '../../role/entities/role.entity';
-import { Student } from '../../student/entities/student.entity';
-import { Teacher } from '../../teacher/entities/teacher.entity';
+import { ClassGroup } from '../../class_group/entities/class_group.entity';
+import { Activity } from 'src/activity/entities/activity.entity';
 
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  name: string;
+
+  @Column()
+  lastname: string;
 
   @Column()
   email: string;
@@ -20,12 +26,16 @@ export class User {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @ManyToOne(() => Role, (role) => role.users)
-  role: Role;
+  @ManyToMany(() => Role, (role) => role.users)
+  roles: Role[];
 
-  @OneToOne(() => Teacher, (teacher) => teacher.user)
-  teacher: Teacher;
+  @ManyToOne(() => User, (user) => user.user)
+  @JoinTable()
+  user: User;
 
-  @OneToOne(() => Student, (student) => student.user)
-  student: Student;
+  @ManyToMany(() => ClassGroup, (class_group) => class_group.users)
+  class_groups: ClassGroup[];
+
+  @ManyToMany(() => Activity, (activities) => activities.users)
+  activities: Activity[];
 }

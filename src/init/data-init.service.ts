@@ -5,6 +5,7 @@ import { User } from '../user/entities/user.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Roles } from 'src/auth/decorators/role.decorator';
 
 @Injectable()
 export class DataInitService implements OnApplicationBootstrap {
@@ -85,7 +86,7 @@ export class DataInitService implements OnApplicationBootstrap {
       const newAdmin = this.userRepository.create({
         email: adminEmail,
         password: hashedPassword,
-        role: adminRole,
+        roles: [adminRole],
       });
 
       await this.userRepository.save(newAdmin);

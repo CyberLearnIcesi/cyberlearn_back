@@ -3,9 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';  // Modulo de autenticación
 import { UserModule } from './user/user.module';  // Modulo de usuarios
-import { TeacherModule } from './teacher/teacher.module';  // Modulo de docentes
 import { ClassModule } from './course/course.module'; // Modulo de cursos
-import { StudentModule } from './student/student.module';  // Modulo de estudiantes
 import { ActivityModule } from './activity/activity.module';  // Modulo de actividades
 import { TopicModule } from './topic/topic.module';  // Modulo de temas
 import { RoleModule } from './role/role.module';  // Modulo de roles
@@ -15,6 +13,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';  // Conexion a base de datos
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guard/auth.guard';  // Guard de autenticación
 import { DataInitService } from './init/data-init.service';
+import { LevelModule } from './level/level.module';
+import { ClassGroupModule } from './class_group/class_group.module';
 
 @Module({
   imports: [
@@ -38,13 +38,13 @@ import { DataInitService } from './init/data-init.service';
 
     AuthModule,
     UserModule,
-    TeacherModule,
     ClassModule,
-    StudentModule,
     ActivityModule,
     TopicModule,
     RoleModule,
     PermissionModule,
+    LevelModule,
+    ClassGroupModule,
   ],
   controllers: [AppController],
   providers: [
