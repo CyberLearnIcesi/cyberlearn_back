@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  # Servicio para el backend en NestJS
+  nestjs-app:
+    image: node:20-alpine
+    container_name: nestjs-app
+    working_dir: /usr/src/app
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - "3000:3000" 
+    command: ["npm", "run", "start:dev"]
+    environment:
+      - NODE_ENV=development
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/local_cyberlearn_icesi_v2  # Conexión a la base de datos
+    depends_on:
+      - postgres
+
+  # Servicio para la base de datos PostgreSQL
+  postgres:
+    image: postgres:13-alpine
+    container_name: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=local_cyberlearn_icesi_v2
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
+    driver: local
