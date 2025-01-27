@@ -33,39 +33,39 @@ export class DataInitService implements OnApplicationBootstrap {
 
   private async initializeRoles(): Promise<void> {
     const roles = [
-      { name: 'STUDENT', permissions: ['READ', 'WRITE'] },
-      { name: 'TEACHER', permissions: ['READ', 'WRITE', 'UPDATE', 'DELETE'] },
-      { name: 'ADMIN', permissions: ['READ', 'WRITE', 'UPDATE', 'DELETE'] },
+      { name: 'STUDENT', permissions: ['READ', 'WRITE'], description: 'Role for students' },
+      { name: 'TEACHER', permissions: ['READ', 'WRITE', 'UPDATE', 'DELETE'], description: 'Role for teachers' },
+      { name: 'ADMIN', permissions: ['READ', 'WRITE', 'UPDATE', 'DELETE'], description: 'Role for administrators' },
     ];
-  
+
     for (const roleData of roles) {
-      const { name, permissions } = roleData;
-  
+      const { name, permissions, description } = roleData;
+
       let role = await this.roleRepository.findOne({
         where: { name },
         relations: ['permissions'],
       });
-  
+
       if (!role) {
-        role = this.roleRepository.create({ name });
+        role = this.roleRepository.create({ name, description });
       }
-  
+
       const permissionEntities = await this.permissionRepository.find({
         where: permissions.map((permissionName) => ({ name: permissionName })),
       });
-  
+
       role.permissions = permissionEntities;
       await this.roleRepository.save(role);
     }
-  }  
-
+  }
+  
   private async initializeAdminUser(): Promise<void> {
     const adminEmail = 'admin@admin.com';
     const adminPassword = 'password';
-    
-    const adminUser = await this.userRepository.findOne({
+
+    let adminUser = await this.userRepository.findOne({
       where: { email: adminEmail },
-      relations: ['role'],
+      relations: ['roles'],
     });
 
     if (!adminUser) {
@@ -80,15 +80,17 @@ export class DataInitService implements OnApplicationBootstrap {
 
       const hashedPassword = await bcrypt.hash(adminPassword, 10);
 
-      console.log('role: ' + adminRole)
+      console.log('roles creando: ' + [adminRole])
 
-      const newAdmin = this.userRepository.create({
+      adminUser = this.userRepository.create({
+        name: 'Admin',
+        lastname: 'User',
         email: adminEmail,
         password: hashedPassword,
-        role: adminRole,
+        roles: [adminRole],
       });
 
-      await this.userRepository.save(newAdmin);
+      await this.userRepository.save(adminUser);
       console.log('Admin user created successfully!');
     }
   }

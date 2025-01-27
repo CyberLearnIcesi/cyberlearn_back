@@ -16,8 +16,8 @@ export class Topic {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP', onUpdate: 'CURRENT_TIMESTAMP' })
   updatedAt: Date;
 
-  @ManyToOne(() => Course, (courseEntity) => courseEntity.topics)
-  courseEntity: Course;
+  @ManyToOne(() => Course, (course) => course.topics)
+  course: Course;
 
   @OneToMany(() => Activity, (activity) => activity.topic)
   activities: Activity[];
