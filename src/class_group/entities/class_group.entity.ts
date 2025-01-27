@@ -1,13 +1,13 @@
 import { User } from '../../user/entities/user.entity';
 import { Course } from '../../course/entities/course.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToOne, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToOne, JoinColumn, ManyToOne, OneToMany, PrimaryColumn, Generated } from 'typeorm';
 
 @Entity('class_groups')
 export class ClassGroup {
-    @PrimaryColumn()
+    @PrimaryGeneratedColumn()
     class_group_id: number;
 
-  @PrimaryGeneratedColumn()
+  @Generated()
   id: number;
 
   @Column()
@@ -20,7 +20,7 @@ export class ClassGroup {
   location: string;  
 
   @ManyToMany(() => User, (user) => user.class_groups)
-  @JoinTable()
+  @JoinTable({name: 'inscritos'})
   users: User[];
 
   @ManyToOne(() => Course, (course) => course.class_groups)

@@ -11,8 +11,7 @@ import { Roles } from '../auth/decorators/role.decorator';
 export class ActivityController {
   constructor(private readonly activityService: ActivityService) {}
 
-  @Roles('TEACHER')
-  @Roles('ADMIN')  
+  @Roles('TEACHER', 'ADMIN')
   @Post()
   create(@Body() createActivityDto: CreateActivityDto) {
     return this.activityService.create(createActivityDto);
@@ -28,15 +27,13 @@ export class ActivityController {
     return this.activityService.findOne(+id);
   }
 
-  @Roles('TEACHER')
-  @Roles('ADMIN')  
+  @Roles('TEACHER', 'ADMIN')
   @Put(':id')
   update(@Param('id') id: string, @Body() updateActivityDto: UpdateActivityDto) {
     return this.activityService.update(+id, updateActivityDto);
   }
 
-  @Roles('TEACHER')
-  @Roles('ADMIN')  
+  @Roles('TEACHER', 'ADMIN')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.activityService.remove(+id);

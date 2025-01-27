@@ -5,8 +5,8 @@ import { Activity } from './entities/activity.entity';
 import { CreateActivityDto } from './dto/create-activity.dto';
 import { Topic } from '../topic/entities/topic.entity';
 import { Level } from '../level/entities/level.entity';
-import { User } from 'src/user/entities/user.entity';
 import { UpdateActivityDto } from './dto/update-activity.dto';
+import { Assignment } from '../assignment/entities/assignment.entity';
 
 @Injectable()
 export class ActivityService {
@@ -20,13 +20,13 @@ export class ActivityService {
     @InjectRepository(Level)
     private readonly levelRepository: Repository<Level>,
 
-    @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    @InjectRepository(Assignment)
+    private readonly assigmentRepository: Repository<Assignment>,
   ) {}
 
   // Crear una actividad
   async create(createActivityDto: CreateActivityDto): Promise<Activity> {
-    const { points, topicId, levelId, userIds } = createActivityDto;
+    const { points, topicId, levelId, assignmentsIds } = createActivityDto;
 
     // Verificar que el Topic existe
     const topic = await this.topicRepository.findOneBy({ id: topicId });
@@ -41,9 +41,9 @@ export class ActivityService {
     }
 
     // Opcional: Verificar y asociar usuarios
-    let users: User[] = [];
-    if (userIds && userIds.length > 0) {
-      users = await this.userRepository.findByIds(userIds);
+    let assignments: Assignment[] = [];
+    if (assignmentsIds && assignmentsIds.length > 0) {
+      assignments = await this.assigmentRepository.findByIds(assignmentsIds);
     }
 
     // Crear la actividad
@@ -51,7 +51,6 @@ export class ActivityService {
       points,
       topic,
       level,
-      users,
     });
 
     return this.activityRepository.save(newActivity);
@@ -60,7 +59,7 @@ export class ActivityService {
   // Obtener todas las actividades
   async findAll(): Promise<Activity[]> {
     return this.activityRepository.find({
-      relations: ['topic', 'level', 'users'],
+      relations: ['topic', 'level', 'assignments'],
     });
   }
 
@@ -68,7 +67,7 @@ export class ActivityService {
   async findOne(id: number): Promise<Activity> {
     const activity = await this.activityRepository.findOne({
       where: { id },
-      relations: ['topic', 'level', 'users'],
+      relations: ['topic', 'level', 'assignments'],
     });
     if (!activity) {
       throw new NotFoundException(`Activity with ID ${id} not found`);
@@ -94,11 +93,6 @@ export class ActivityService {
         throw new NotFoundException(`Level with ID ${updateData.levelId} not found`);
       }
       activity.level = level;
-    }
-
-    if (updateData.userIds) {
-      const users = await this.userRepository.findByIds(updateData.userIds);
-      activity.users = users;
     }
 
     Object.assign(activity, updateData);

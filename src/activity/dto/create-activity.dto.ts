@@ -12,5 +12,5 @@ export class CreateActivityDto {
 
   @IsOptional()
   @IsNumber({}, { each: true })
-  userIds?: number[]; // IDs de los usuarios relacionados (opcional)
+  assignmentsIds?: number[]; // IDs de los usuarios relacionados (opcional)
 }

@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';  // Modulo de autenticación
 import { UserModule } from './user/user.module';  // Modulo de usuarios
-import { ClassModule } from './course/course.module'; // Modulo de cursos
+import { CourseModule } from './course/course.module'; // Modulo de cursos
 import { ActivityModule } from './activity/activity.module';  // Modulo de actividades
 import { TopicModule } from './topic/topic.module';  // Modulo de temas
 import { RoleModule } from './role/role.module';  // Modulo de roles
@@ -15,6 +15,7 @@ import { AuthGuard } from './auth/guard/auth.guard';  // Guard de autenticación
 import { DataInitService } from './init/data-init.service';
 import { LevelModule } from './level/level.module';
 import { ClassGroupModule } from './class_group/class_group.module';
+import { AssignmentModule } from './assignment/assignment.module';
 
 @Module({
   imports: [
@@ -38,13 +39,14 @@ import { ClassGroupModule } from './class_group/class_group.module';
 
     AuthModule,
     UserModule,
-    ClassModule,
+    CourseModule,
     ActivityModule,
     TopicModule,
     RoleModule,
     PermissionModule,
     LevelModule,
     ClassGroupModule,
+    AssignmentModule,
   ],
   controllers: [AppController],
   providers: [

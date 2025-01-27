@@ -11,8 +11,7 @@ export class TopicController {
   constructor(private readonly topicService: TopicService) {}
 
   @Post()
-  @Roles('ADMIN')
-  @Roles('TEACHER')
+  @Roles('ADMIN', 'TEACHER')
   create(@Body() createTopicDto: CreateTopicDto) {
     return this.topicService.create(createTopicDto);
   }
@@ -28,15 +27,13 @@ export class TopicController {
   }
 
   @Put(':id')
-  @Roles('ADMIN')
-  @Roles('TEACHER')
+  @Roles('ADMIN', 'TEACHER')
   update(@Param('id') id: string, @Body() updateTopicDto: UpdateTopicDto) {
     return this.topicService.update(+id, updateTopicDto);
   }
 
   @Delete(':id')
-  @Roles('ADMIN')
-  @Roles('TEACHER')
+  @Roles('ADMIN', 'TEACHER')
   remove(@Param('id') id: string) {
     return this.topicService.remove(+id);
   }

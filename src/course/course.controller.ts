@@ -5,42 +5,37 @@ import { UpdateCourseDto } from './dto/update-course.dto';
 import { Roles } from '../auth/decorators/role.decorator';
 import { RolesGuard } from '../auth/guard/roles.guard';
 
-@Controller('course')
+@Controller('courses')
 @UseGuards(RolesGuard)
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
 
   @Post()
-  @Roles('TEACHER')
-  @Roles('ADMIN')
+  @Roles('TEACHER', 'ADMIN')
   create(@Body() createCourseDto: CreateCourseDto) {
     return this.courseService.create(createCourseDto);
   }
 
   @Get()
-  @Roles('TEACHER')
-  @Roles('ADMIN')
+  @Roles('TEACHER', 'ADMIN')
   findAll() {
     return this.courseService.findAll();
   }
 
   @Get(':id')
-  @Roles('TEACHER')
-  @Roles('ADMIN')
+  @Roles('TEACHER', 'ADMIN')
   findOne(@Param('id') id: string) {
     return this.courseService.findOne(+id);
   }
 
   @Patch(':id')
-  @Roles('TEACHER')
-  @Roles('ADMIN')
+  @Roles('TEACHER', 'ADMIN')
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.courseService.update(+id, updateCourseDto);
   }
 
   @Delete(':id')
-  @Roles('TEACHER')
-  @Roles('ADMIN')
+  @Roles('TEACHER', 'ADMIN')
   remove(@Param('id') id: string) {
     return this.courseService.remove(+id);
   }

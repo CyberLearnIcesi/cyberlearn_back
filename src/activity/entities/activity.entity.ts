@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToMany, JoinTable, OneToOne, JoinColumn, ManyToOne, OneToMany } from 'typeorm';
 import { Topic } from '../../topic/entities/topic.entity';
 import { Level } from '../../level/entities/level.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Assignment } from '../../assignment/entities/assignment.entity';
 
 @Entity('activities')
 export class Activity {
@@ -23,7 +23,6 @@ export class Activity {
   @ManyToOne(() => Level, (level) => level.activities)
   level: Level;
 
-  @ManyToMany(() => User, (users) => users.activities)
-  @JoinTable()
-  users: User[];
+@OneToMany(() => Assignment, (assignment) => assignment.activity)
+assignments: Assignment[];
 }

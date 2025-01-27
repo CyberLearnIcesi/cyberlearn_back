@@ -29,11 +29,11 @@ export class TopicService {
   
 
   findAll() {
-    return this.topicRepository.find({ relations: ['activities', 'class'] });
+    return this.topicRepository.find({ relations: ['activities'] });
   }
 
   async findOne(id: number) {
-    const topic = await this.topicRepository.findOne({ where: { id }, relations: ['activities', 'class'] });
+    const topic = await this.topicRepository.findOne({ where: { id }, relations: ['activities'] });
     if (!topic) {
       throw new NotFoundException(`Topic with ID ${id} not found`);
     }

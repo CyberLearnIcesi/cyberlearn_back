@@ -21,28 +21,30 @@ export class AuthService {
     private readonly userRepository: Repository<User>  
   ) {}
 
-  
-
   async signIn(email: string, password: string) {
-      const user = await this.usersService.findByEmail(email);
-      
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        throw new UnauthorizedException('Invalid email or password.');
-      }
+    // Usamos leftJoinAndSelect para cargar los roles
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role') // Esto asegura que los roles sean cargados
+      .where('user.email = :email', { email })
+      .getOne();
 
-      console.log('USER' + user);
-      console.log('User ' + user.roles);
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      throw new UnauthorizedException('Invalid email or password.');
+    }
 
+    const payload = {
+      id: user.id,
+      email: user.email,
+      roles: user.roles,  // Los roles deberían estar ahora cargados
+    };
 
-      const payload = {id: user.id, email: user.email, 
-        role: user.roles ? user.roles : null // 
-      };
-
-      return {
-        ...payload,
-        token: await this.jwtService.signAsync(payload)
-      }
+    return {
+      ...payload,
+      token: await this.jwtService.signAsync(payload),
+    };
   }
+  
 
   async sendMail(email:string){
     const user = await this.usersService.findByEmail(email);
