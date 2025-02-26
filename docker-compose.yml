@@ -20,7 +20,7 @@ services:
   backend:
     depends_on:
       - db
-    image: cyberlearnbackend:0.0.1
+    image: cyberlearnbackend:0.0.2
     restart: always
     ports:
       - '3000:3000'
