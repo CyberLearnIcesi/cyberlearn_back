@@ -33,7 +33,7 @@ jobs:
       - name: Construir imagen Docker con el tag
         run: |
           docker build -t domi0620/cyberlearnbackend:${{ env.IMAGE_TAG }} .
-          docker tag domi0620/cyberlearnbackend:${{ env.IMAGE_TAG }}
+          docker tag domi0620/cyberlearnbackend:${{ env.IMAGE_TAG }} domi0620/cyberlearnbackend:${{ env.IMAGE_TAG }}
 
       - name: Subir imágenes a Docker Hub
         run: |
